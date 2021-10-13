@@ -9,15 +9,69 @@ body {
   width: 100vw;
   height: 100vh;
 }
+.record {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+}
 </style>
 </head>
 <body>
+<button class="record" onclick="toggleRecord(this)">录制</button>
 <canvas id="glcanvas">
   你的浏览器似乎不支持或者禁用了HTML5 <code>&lt;canvas&gt;</code> 元素.
 </canvas>
 <script src="/node_modules/gl-matrix/gl-matrix.js"></script> <!-- or .min.js -->
+<script src="record.js"></script>
 <script type="module" src="./main.js"></script>
-<script>
+
+<!-- shaders -->
+<script id="vs-03" type="x-shader/x-vertex">
+attribute vec3 aVertexPosition;
+attribute vec4 aVertexColor;
+
+uniform mat4 uModelViewMatrix;
+uniform mat4 uProjectionMatrix;
+
+varying lowp vec4 vColor;
+
+void main(void) {
+  gl_Position = uProjectionMatrix* uModelViewMatrix * vec4(aVertexPosition, 1.0);
+  vColor = aVertexColor;
+}
+</script>
+
+<script id="fs-03" type="x-shader/x-fragment">
+varying lowp vec4 vColor;
+
+void main(void) {
+  gl_FragColor = vColor;
+}
+</script>
+
+<script id="vs-06" type="x-shader/x-vertex">
+attribute vec3 aVertexPosition;
+attribute vec2 aTextureCoord;
+
+uniform mat4 uModelViewMatrix;
+uniform mat4 uProjectionMatrix;
+
+varying highp vec2 vTextureCoord;
+
+void main(void) {
+  gl_Position = uProjectionMatrix * uModelViewMatrix * vec4(aVertexPosition, 1.0);
+  vTextureCoord = aTextureCoord;
+}
+</script>
+
+<script id="fs-06" type="x-shader/x-fragment">
+varying highp vec2 vTextureCoord;
+
+uniform sampler2D uSampler;
+
+void main(void) {
+  gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+}
 </script>
 </body>
 </html>

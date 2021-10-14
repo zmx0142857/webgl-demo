@@ -14,10 +14,32 @@ body {
   top: 10px;
   right: 10px;
 }
+.btn-group {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  height: 43px;
+}
+.btn-group > a {
+  text-decoration: none;
+  display: inline-block;
+  border: 1px solid #888;
+  border-radius: 3px;
+  padding: 5px;
+  margin: 5px;
+  color: #aaa;
+}
+.btn-group > a:target {
+  color: #29f;
+  border-color: #29f;
+}
 </style>
 </head>
 <body>
 <button class="record" onclick="toggleRecord(this)">录制</button>
+<div class="btn-group"></div>
 <canvas id="glcanvas">
   你的浏览器似乎不支持或者禁用了HTML5 <code>&lt;canvas&gt;</code> 元素.
 </canvas>
@@ -70,7 +92,7 @@ varying highp vec2 vTextureCoord;
 uniform sampler2D uSampler;
 
 void main(void) {
-  gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+  gl_FragColor = texture2D(uSampler, vTextureCoord);
 }
 </script>
 </body>

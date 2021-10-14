@@ -107,6 +107,11 @@ class Scene {
     gl.drawArrays(gl.TRIANGLE_STRIP, offset, vertexCount)
   }
 
+  drawElements (vertexCount, offset = 0) {
+    const { gl } = this
+    gl.drawElements(gl.TRIANGLES, vertexCount, gl.UNSIGNED_SHORT, offset)
+  }
+
   // 注意纹理大小应该是 2 的幂, 否则会受到限制
   // // gl.NEAREST is also allowed, instead of gl.LINEAR, as neither mipmap.
   // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -117,17 +122,59 @@ class Scene {
   initTexture (src) {
     const { gl } = this
     const texture = gl.createTexture()
+    // 图片下载完成前, 临时显示的图片
+    const level = 0
+    const internalFormat = gl.RGBA
+    const srcFormat = gl.RGBA
+    const srcType = gl.UNSIGNED_BYTE
+    const width = 1
+    const height = 1
+    const border = 0
+    const pixel = new Uint8Array([0, 0, 255, 255])  // opaque blue
+    gl.bindTexture(gl.TEXTURE_2D, texture)
+    gl.texImage2D(gl.TEXTURE_2D, level, internalFormat,
+      width, height, border, srcFormat, srcType,
+      pixel)
+
+    const isPowerOf2 = value => (value & (value - 1)) === 0
     const image = new Image()
     image.onload = () => {
       gl.bindTexture(gl.TEXTURE_2D, texture)
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST)
-      gl.generateMipmap(gl.TEXTURE_2D)
-      gl.bindTexture(gl.TEXTURE_2D, null)
+      gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, srcFormat, srcType, image)
+      if (isPowerOf2(image.width) && isPowerOf2(image.height)) {
+        gl.generateMipmap(gl.TEXTURE_2D)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST)
+      } else {
+        console.warn('texture is not power of 2:', src)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      }
     }
     image.src = src
     return texture
+  }
+
+  setTexture (uniform, texture, textureId) {
+    const { gl } = this
+    // GL 最多可同时注册32张纹理；gl.TEXTURE0 是第一张。
+    if (textureId === undefined) textureId = gl.TEXTURE0
+    gl.activeTexture(textureId)
+    gl.bindTexture(gl.TEXTURE_2D, texture)
+    gl.uniform1i(uniform, 0)
+  }
+
+  update (callback) {
+    const canvas = window.canvas
+    canvas.isPlaying = true
+
+    const frame = now => {
+      // 异步请求下一帧
+      if (canvas.isPlaying) requestAnimationFrame(frame)
+      callback(now)
+    }
+    requestAnimationFrame(frame)
   }
 }
 
@@ -270,11 +317,9 @@ export class Scene04 extends Scene03 {
     this.setAttr(programInfo.aVertexColor, buffers.color, { n: 4 })
     gl.uniformMatrix4fv(programInfo.uProjectionMatrix, false, this.perspectiveMatrix())
 
-    const frame = now => {
-      requestAnimationFrame(frame) // 异步请求下一帧
+    this.update(now => {
       this.draw(programInfo, now * 0.001)
-    }
-    requestAnimationFrame(frame)
+    })
   }
 }
 
@@ -365,7 +410,7 @@ export class Scene05 extends Scene04 {
 
     gl.uniformMatrix4fv(programInfo.uModelViewMatrix, false, modelViewMatrix)
 
-    gl.drawElements(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0)
+    this.drawElements(36)
   }
 
   render () {
@@ -379,11 +424,9 @@ export class Scene05 extends Scene04 {
 
     gl.uniformMatrix4fv(programInfo.uProjectionMatrix, false, this.perspectiveMatrix())
 
-    const frame = now => {
-      requestAnimationFrame(frame) // 异步请求下一帧
+    this.update(now => {
       this.draw(programInfo, now * 0.001)
-    }
-    requestAnimationFrame(frame)
+    })
   }
 }
 
@@ -394,11 +437,11 @@ export class Scene06 extends Scene05 {
     const program = Scene.prototype.initShader.call(this, 'vs-06', 'fs-06')
 
     return {
-      program,
       aVertexPosition: gl.getAttribLocation(program, 'aVertexPosition'),
       aTextureCoord: gl.getAttribLocation(program, 'aTextureCoord'),
       uProjectionMatrix: gl.getUniformLocation(program, 'uProjectionMatrix'),
       uModelViewMatrix: gl.getUniformLocation(program, 'uModelViewMatrix'),
+      uSampler: gl.getUniformLocation(program, 'uSampler'),
     }
   }
 
@@ -446,24 +489,18 @@ export class Scene06 extends Scene05 {
   render () {
     const programInfo = this.initShader()
     const buffers = this.initBuffers()
-    console.log(buffers)
+    const texture0 = this.initTexture('cubetexture.png')
     const { gl } = this
 
+    this.setTexture(programInfo.uSampler, texture0, gl.TEXTURE0)
     this.setAttr(programInfo.aVertexPosition, buffers.position, { n: 3 })
-    this.setAttr(programInfo.aTextureCoord, null, { n: 2 })
-
-    gl.activeTexture(gl.TEXTURE0); // GL 最多可同时注册32张纹理；gl.TEXTURE0 是第一张。
-    gl.bindTexture(gl.TEXTURE_2D, this.initTexture('cubetexture.png'));
-    gl.uniform1i(gl.getUniformLocation(programInfo.program, 'uSampler'), 0)
+    this.setAttr(programInfo.aTextureCoord, buffers.texture, { n: 2 })
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.index)
-
     gl.uniformMatrix4fv(programInfo.uProjectionMatrix, false, this.perspectiveMatrix())
 
-    const frame = now => {
-      requestAnimationFrame(frame) // 异步请求下一帧
+    this.update(now => {
       this.draw(programInfo, now * 0.001)
-    }
-    requestAnimationFrame(frame)
+    })
   }
 }

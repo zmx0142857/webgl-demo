@@ -9,11 +9,6 @@ body {
   width: 100vw;
   height: 100vh;
 }
-.record {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-}
 .btn-group {
   position: fixed;
   top: 0;
@@ -39,12 +34,11 @@ body {
 </head>
 <body>
 <div class="btn-group"></div>
-<button class="record" onclick="toggleRecord(this)">录制</button>
 <canvas id="glcanvas">
   你的浏览器似乎不支持或者禁用了HTML5 <code>&lt;canvas&gt;</code> 元素.
 </canvas>
 <script src="/node_modules/gl-matrix/gl-matrix.js"></script> <!-- or .min.js -->
-<script src="record.js"></script>
+<script src="/lib/record.js"></script>
 <script type="module" src="./main.js"></script>
 
 <!-- shaders -->

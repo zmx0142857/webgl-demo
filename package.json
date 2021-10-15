@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "gl-matrix": "^3.4.3"
+    "gl-matrix": "^3.4.3",
+    "three": "^0.133.1"
   }
 }

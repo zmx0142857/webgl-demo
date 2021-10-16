@@ -1,8 +1,9 @@
 import * as THREE from 'three'
 import { WEBGL } from 'three/examples/jsm/WebGL.js'
 import scene03 from './scene03.js'
-import scene04 from './scene04.js'
+// import scene04 from './scene04.js'
 // import scene05 from './scene05.js'
+import scene06 from './scene06.js'
 
 function getApp (options) {
   const { width, height } = options
@@ -39,9 +40,11 @@ function getApp (options) {
 
     // 实用方法
     render () {
-      renderer.render(scene, camera)
+      renderer.render(this.scene, this.camera)
     },
-    add: scene.add.bind(scene),
+    add (...args) {
+      this.scene.add(...args)
+    },
     // 动画主循环
     animate (callback) {
       const frame = time => {
@@ -54,18 +57,14 @@ function getApp (options) {
     },
     // 响应窗口变化
     responsive () {
-      const canvas = renderer.domElement
+      const canvas = this.renderer.domElement
       // const pixelRatio = window.devicePixelRatio // 设备像素比
       const pixelRatio = 1 // 在高分辨率屏幕上, 仍以原分辨率渲染, 以节约资源
       const width = canvas.clientWidth * pixelRatio | 0 // 向零取整
       const height = canvas.clientHeight * pixelRatio | 0
-      // 如果实际大小与缓冲区大小不符, 则用 setSize 改变缓冲区大小
-      // setSize 默认通过 css 改变画布的实际大小, 但不会改变缓冲区大小
-      // 如果要改变缓冲区大小, 需要设置第三个参数为 false
       if (canvas.width !== width || canvas.height !== height) {
-        renderer.setSize(width, height, false)
-        camera.aspect = width / height
-        camera.updateProjectionMatrix()
+        this.renderer.setSize(width, height, false)
+        this.updateCamera(width, height)
       }
     },
     // 平行光
@@ -74,6 +73,13 @@ function getApp (options) {
       const light = new THREE.DirectionalLight(0xffffff, intensity)
       light.position.set(x, y, z)
       this.add(light)
+    },
+    // 如果实际大小与缓冲区大小不符, 则用 setSize 改变缓冲区大小
+    // setSize 默认通过 css 改变画布的实际大小, 但不会改变缓冲区大小
+    // 如果要改变缓冲区大小, 需要设置第三个参数为 false
+    updateCamera (width, height) {
+      this.camera.aspect = width / height
+      this.camera.updateProjectionMatrix()
     }
   }
 }
@@ -122,5 +128,5 @@ if (!WEBGL.isWebGL2Available()) {
     //   distance: 100,
     // }
   })
-  scene04(app)
+  scene06(app)
 }

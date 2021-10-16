@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "webgl": "serve",
     "three": "parcel 02-three/index.html"
   },
   "keywords": [],
@@ -13,5 +14,8 @@
     "gl-matrix": "^3.4.3",
     "parcel": "^2.0.0",
     "three": "^0.133.1"
+  },
+  "devDependencies": {
+    "parcel-reporter-static-files-copy": "^1.3.0"
   }
 }

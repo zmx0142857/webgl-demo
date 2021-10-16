@@ -220,7 +220,8 @@ export default function scene03 (app) {
     }
 
     async function doit() {
-      const font = await loadFont('https://threejsfundamentals.org/threejs/resources/threejs/fonts/helvetiker_regular.typeface.json');  
+      // https://threejsfundamentals.org/threejs/resources/threejs/fonts/
+      const font = await loadFont('helvetiker_regular.typeface.json');
       const geometry = new TextGeometry('three.js', {
         font: font,
         size: 3.0,
@@ -239,11 +240,10 @@ export default function scene03 (app) {
       const mesh = new THREE.Mesh(geometry, material)
       geometry.computeBoundingBox();
       geometry.boundingBox.getCenter(mesh.position).multiplyScalar(-1);
-
-      const parent = new THREE.Object3D();
-      parent.add(mesh);
-
-      addObject(-1, -1, parent);
+      // 保持位置中心
+      const parent = new THREE.Object3D()
+      parent.add(mesh)
+      addObject(parent, -1, -1);
     }
     doit();
   }

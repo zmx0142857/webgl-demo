@@ -1,6 +1,8 @@
-import * as THREE from '../node_modules/three/build/three.module.js'
-import { WEBGL } from '../node_modules/three/examples/jsm/WebGL.js'
+import * as THREE from 'three'
+import { WEBGL } from 'three/examples/jsm/WebGL.js'
 import scene03 from './scene03.js'
+import scene04 from './scene04.js'
+// import scene05 from './scene05.js'
 
 function getApp (options) {
   const { width, height } = options
@@ -120,5 +122,5 @@ if (!WEBGL.isWebGL2Available()) {
     //   distance: 100,
     // }
   })
-  scene03(app)
+  scene04(app)
 }

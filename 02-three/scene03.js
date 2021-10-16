@@ -1,3 +1,4 @@
+// basic geometry example
 import * as THREE from 'three'
 import { ParametricGeometry } from 'three/examples/jsm/geometries/ParametricGeometry.js'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'

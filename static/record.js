@@ -70,6 +70,6 @@ addStyle(`
 .record {
   position: fixed;
   top: 10px;
-  right: 10px;
+  left: 10px;
 }`)
 document.body.appendChild(btnRecord)

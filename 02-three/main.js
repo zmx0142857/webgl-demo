@@ -1,11 +1,6 @@
 import * as THREE from 'three'
 import { WEBGL } from 'three/examples/jsm/WebGL.js'
-// import scene03 from './scene03.js'
-// import scene04 from './scene04.js'
-// import scene05 from './scene05.js'
-// import scene06 from './scene06.js'
-// import scene07 from './scene07.js'
-import scene08 from './scene08.js'
+import scene05 from './scene05.js'
 
 const noop = () => {}
 
@@ -134,5 +129,5 @@ if (!WEBGL.isWebGL2Available()) {
     //   distance: 100,
     // }
   })
-  scene08(app)
+  scene05(app)
 }

@@ -43,6 +43,7 @@ function makeXYZGUI(gui, vector3, name, onChangeFn) {
 export default function scene08 (app) {
   app.camera.position.set(0, 10, 20);
 
+  // 滚轮缩放画面, 鼠标拖拽调整视角
   const controls = new OrbitControls(app.camera, app.canvas);
   controls.target.set(0, 5, 0);
   controls.update();

@@ -1,9 +1,13 @@
 import * as THREE from 'three'
 import { WEBGL } from 'three/examples/jsm/WebGL.js'
-import scene03 from './scene03.js'
+// import scene03 from './scene03.js'
 // import scene04 from './scene04.js'
 // import scene05 from './scene05.js'
-import scene06 from './scene06.js'
+// import scene06 from './scene06.js'
+// import scene07 from './scene07.js'
+import scene08 from './scene08.js'
+
+const noop = () => {}
 
 function getApp (options) {
   const { width, height } = options
@@ -11,7 +15,8 @@ function getApp (options) {
   // renderer
   const renderer = new THREE.WebGLRenderer()
   renderer.setSize(width, height)
-  document.body.appendChild(renderer.domElement)
+  const canvas = renderer.domElement
+  document.body.appendChild(canvas)
 
   // camera
   const cameraConfig = {
@@ -33,6 +38,8 @@ function getApp (options) {
   const scene = new THREE.Scene()
 
   return {
+    canvas,
+
     // three.js 的三要素
     renderer,
     camera,
@@ -46,7 +53,7 @@ function getApp (options) {
       this.scene.add(...args)
     },
     // 动画主循环
-    animate (callback) {
+    animate (callback = noop) {
       const frame = time => {
         requestAnimationFrame(frame)
         this.responsive()
@@ -113,7 +120,6 @@ function scene02 (app) {
   })
 }
 
-
 // 检查兼容性
 if (!WEBGL.isWebGL2Available()) {
   alert('your browser does not support WebGL 2')
@@ -128,5 +134,5 @@ if (!WEBGL.isWebGL2Available()) {
     //   distance: 100,
     // }
   })
-  scene06(app)
+  scene08(app)
 }

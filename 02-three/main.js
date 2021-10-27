@@ -86,35 +86,6 @@ function getApp (options) {
   }
 }
 
-// 两条线段组成 ^ 形
-function scene01 (app) {
-  const material = new THREE.LineBasicMaterial({ color: 0x66ccff })
-  const points = [
-    [-10, 0, 0],
-    [0, 10, 0],
-    [10, 0, 0]
-  ].map(point => new THREE.Vector3(...point))
-  const geometry = new THREE.BufferGeometry().setFromPoints( points )
-  const line = new THREE.Line(geometry, material)
-  app.add(line)
-  app.render()
-}
-
-// 转动的方块
-function scene02 (app) {
-  app.camera.position.z = 10
-  const geometry = new THREE.BoxGeometry()
-  // const material = new THREE.MeshBasicMaterial({ color: 0x44aa88 }) // 无光泽
-  const material = new THREE.MeshPhongMaterial({ color: 0x44aa88 }) // 有光泽
-  const cube = new THREE.Mesh(geometry, material)
-  app.add(cube)
-  app.lightOn(-1, 2, 4)
-  app.animate(() => {
-    cube.rotation.x += 0.01
-    cube.rotation.y += 0.01
-  })
-}
-
 // 检查兼容性
 if (!WEBGL.isWebGL2Available()) {
   alert('your browser does not support WebGL 2')

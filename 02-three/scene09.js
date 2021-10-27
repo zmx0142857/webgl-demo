@@ -1,3 +1,4 @@
+// 假阴影，弹跳的小球
 import * as THREE from 'three'
 
 export default function scene09 (app) {

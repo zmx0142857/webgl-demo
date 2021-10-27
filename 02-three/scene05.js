@@ -1,3 +1,4 @@
+// solar system example with template
 import * as THREE from 'three'
 import parse from './parse'
 
@@ -5,21 +6,21 @@ const template = `
 <template>
   <Object3D ref="solarSystem">
     <Mesh ref="sun" class="sky"
-      args="...[sphereGeometry, sunMaterial]"
-      set.scale="...[5, 5, 5]"
+      args="sphereGeometry, sunMaterial"
+      set.scale="5, 5, 5"
     />
     <Object3D ref="earthOrbit" position.x="10">
-      <Mesh ref="earth" args="...[sphereGeometry, earthMaterial]" class="sky" />
+      <Mesh ref="earth" args="sphereGeometry, earthMaterial" class="sky" />
       <Object3D ref="moonOrbit" position.x="2">
         <Mesh ref="moon"
           class="sky"
-          args="...[sphereGeometry, moonMaterial]"
-          set.scale="...[.5, .5, .5]"
+          args="sphereGeometry, moonMaterial"
+          set.scale=".5, .5, .5"
         />
       </Object3D>
     </Object3D>
   </Object3D>
-  <PointLight args="...[0xffffff, 3]" />
+  <PointLight args="0xffffff, 3" />
 </template>`
 
 const data = {

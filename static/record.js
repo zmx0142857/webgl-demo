@@ -1,3 +1,4 @@
+;(function(){
 function download (dataUrl, filename) {
   var a = document.createElement('a')
   a.href = dataUrl
@@ -73,3 +74,4 @@ addStyle(`
   left: 10px;
 }`)
 document.body.appendChild(btnRecord)
+})()

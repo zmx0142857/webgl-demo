@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lorenz Attractor</title>
+<style>
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #000;
+}
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+</style>
+</head>
+<body>
+<script src="../node_modules/gl-matrix/gl-matrix.js"></script> <!-- or .min.js -->
+<script src="../static/record.js"></script>
+<script>
+const { mat4, vec3, vec4 } = window.glMatrix
+
+function LorenzAttractor (σ, ρ, β) {
+  return function (v, t) {
+    const [x, y, z] = v
+    v[0] += t * (σ * (y - x))
+    v[1] += t * (x * (ρ - z) - y)
+    return v[2] += t * (x * y - β * z)
+  }
+}
+
+var canvas, context, lorenz, model, mvp, p, projection, u, v, view
+lorenz = LorenzAttractor(10, 28, 8 / 3)
+canvas = document.createElement('canvas')
+context = canvas.getContext('2d')
+document.body.appendChild(canvas)
+model = mat4.create()
+view = mat4.create()
+projection = mat4.create()
+mvp = mat4.create()
+v = vec4.fromValues(1, 0, 0, 1)
+u = vec4.create()
+p = vec4.create()
+
+;(function loop () {
+  requestAnimationFrame(loop)
+  const T = 1e-3 * Date.now()
+  const W = canvas.clientWidth
+  const H = canvas.clientHeight
+  const HW = W / 2
+  const HH = H / 2
+  if (W !== canvas.width || H !== canvas.height) {
+    canvas.width = W
+    canvas.height = H
+    context.globalCompositeOperation = 'lighter'
+    context.strokeStyle = 'rgb(64,32,128)'
+  }
+  mat4.identity(model)
+  mat4.rotateY(model, model, 0.05 * T)
+  mat4.rotateX(model, model, 1.89 * Math.PI)
+  mat4.rotateZ(model, model, 1.66 * Math.PI)
+  mat4.translate(model, model, [0, 0, -27])
+  mat4.lookAt(view, [0, 3, 25], [0, -2, 0], [0, 1, 0])
+  mat4.perspective(projection, Math.PI / 4, W / H, 1e-3, 1e3)
+  mat4.scale(projection, projection, [HW, HH, 1])
+  ;[model, view, projection].reduce(function (a, b) {
+    return mat4.mul(mvp, b, a)
+  })
+  context.setTransform(1, 0, 0, -1, HW, HH)
+
+  let lastX, lastY, outside
+  for (let i = 0; i < 15000; ++i) {
+    if (i === 5e1) {
+      vec3.copy(u, v)
+    }
+    lorenz(v, 5e-3)
+    vec4.transformMat4(p, v, mvp)
+    vec3.scale(p, p, 1 / p[3])
+    const [x, y, z] = p
+    if ((-1 < z && z < 1) && (-HH < y && y < HH) && (-HW < x && x < HW)) {
+      if (outside) {
+        outside = false
+        context.moveTo(lastX, lastY)
+      }
+      context.lineTo(x, y)
+    } else {
+      if (!outside) {
+        outside = true
+        context.lineTo(x, y)
+      }
+      lastX = x
+      lastY = y
+    }
+  }
+  vec3.copy(v, u)
+  context.setTransform(1, 0, 0, 1, 0, 0)
+  context.clearRect(0, 0, W, H)
+  context.stroke()
+  context.beginPath()
+})()
+</script>
+</body>
+</html>

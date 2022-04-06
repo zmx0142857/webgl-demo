@@ -6,15 +6,15 @@ const template = `
 <template>
   <Object3D ref="solarSystem">
     <Mesh ref="sun" class="sky"
-      args="sphereGeometry, sunMaterial"
+      args="geometry.sphere, material.sun"
       set.scale="5, 5, 5"
     />
     <Object3D ref="earthOrbit" position.x="10">
-      <Mesh ref="earth" args="sphereGeometry, earthMaterial" class="sky" />
+      <Mesh ref="earth" args="geometry.sphere, material.earth" class="sky" />
       <Object3D ref="moonOrbit" position.x="2">
         <Mesh ref="moon"
           class="sky"
-          args="sphereGeometry, moonMaterial"
+          args="geometry.sphere, material.moon"
           set.scale=".5, .5, .5"
         />
       </Object3D>
@@ -24,16 +24,20 @@ const template = `
 </template>`
 
 const data = {
-  sphereGeometry: new THREE.SphereGeometry(1),
-  sunMaterial: new THREE.MeshPhongMaterial({ emissive: 0xffcc44 }),
-  earthMaterial: new THREE.MeshPhongMaterial({
-    color: 0x2233ff,
-    emissive: 0x112244
-  }),
-  moonMaterial: new THREE.MeshPhongMaterial({
-    color: 0x888888,
-    emissive: 0x222222,
-  })
+  geometry: {
+    sphere: new THREE.SphereGeometry(1),
+  },
+  material: {
+    sun: new THREE.MeshPhongMaterial({ emissive: 0xffcc44 }),
+    earth: new THREE.MeshPhongMaterial({
+      color: 0x2233ff,
+      emissive: 0x112244
+    }),
+    moon: new THREE.MeshPhongMaterial({
+      color: 0x888888,
+      emissive: 0x222222,
+    })
+  }
 }
 
 export default function scene05 (app) {

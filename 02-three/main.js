@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { WEBGL } from 'three/examples/jsm/WebGL.js'
-import scene from './scene11.js'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import scene from './15-my-geometry.js'
 
 const noop = () => {}
 
@@ -69,12 +70,15 @@ function getApp (options) {
         this.updateCamera(width, height)
       }
     },
-    // 平行光
-    lightOn (x, y, z) {
+    // 平行光与环境光
+    lightOn (x = 400, y = 200, z = 300) {
       const intensity = 1
       const light = new THREE.DirectionalLight(0xffffff, intensity)
       light.position.set(x, y, z)
       this.add(light)
+
+      const ambient = new THREE.AmbientLight(0x444444)
+      this.add(ambient)
     },
     // 如果实际大小与缓冲区大小不符, 则用 setSize 改变缓冲区大小
     // setSize 默认通过 css 改变画布的实际大小, 但不会改变缓冲区大小
@@ -82,7 +86,13 @@ function getApp (options) {
     updateCamera (width, height) {
       this.camera.aspect = width / height
       this.camera.updateProjectionMatrix()
-    }
+    },
+    orbitControl (x = 0, y = 5, z = 0) {
+      const controls = new OrbitControls(this.camera, this.canvas)
+      controls.target.set(x, y, z)
+      controls.update()
+      return controls
+    },
   }
 }
 

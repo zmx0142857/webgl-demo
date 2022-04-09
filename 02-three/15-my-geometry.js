@@ -1,40 +1,60 @@
 import * as THREE from 'three'
 import Delaunay from 'delaunay'
 
-function setAttr (geometry, name, arr, nComponents) {
-  const attr = new THREE.BufferAttribute(new Float32Array(arr), nComponents)
-  geometry.setAttribute(name, attr)
+/**
+ * 设置 webgl 属性
+ * @param {Geometry} geometry
+ * @param {string} key
+ * @param {Object} value: { arr, nComponents }
+ */
+function setAttr (geometry, key, value) {
+  const attr = new THREE.BufferAttribute(
+    new Float32Array(value.arr), value.nComponents
+  )
+  geometry.setAttribute(key, attr)
 }
 
+/**
+ * 创建自定义几何体
+ * @param {Array} vertices: [{ position, normal, uv?, color? }]
+ * @param {Array} indexes: [number]
+ */
 function myGeometry (vertices, indexes) {
   const geometry = new THREE.BufferGeometry()
-  const positions = []
-  const normals = []
-  const uvs = []
-  const colors = []
-  for (const vertex of vertices) {
-    positions.push(...vertex.pos)
-    normals.push(...vertex.norm)
-    //uvs.push(...vertex.uv)
-    //colors.push(...vertex.color)
+  const data = {
+    position: { arr: [], nComponents: 3 },
+    normal: { arr: [], nComponents: 3 },
+    uv: { arr: [], nComponents: 2 },
+    color: { arr: [], nComponents: 4 },
   }
-  setAttr(geometry, 'position', positions, 3)
-  setAttr(geometry, 'normal', normals, 3)
-  //setAttr(geometry, 'uv', uvs, 2)
-  //setAttr(geometry, 'color', colors, 4)
-  if (indexes)
-    geometry.setIndex(indexes)
+
+  // 找出实际传入的 key
+  const keys = Object.keys(data)
+    .filter(key => vertices[0].hasOwnProperty(key))
+
+  // 从 vertices 中载入并设置 webgl 属性
+  keys.forEach(key => {
+    const value = data[key]
+    vertices.forEach(vertex => {
+      value.arr.push(...vertex[key])
+    })
+    setAttr(geometry, key, value)
+  })
+
+  // 设置下标数組
+  if (indexes) geometry.setIndex(indexes)
   return geometry
 }
 
+// 两个三角面
 function triGeometry () {
   const vertices = [
-    { pos: [0, 0, 0], norm: [0, 0, -1], },
-    { pos: [0, 100, 0], norm: [0, 0, -1], },
-    { pos: [50, 0, 0], norm: [0, 0, -1], },
-    { pos: [0, 0, 0], norm: [0, -1, 0], },
-    { pos: [50, 0, 0], norm: [0, -1, 0], },
-    { pos: [0, 0, 100], norm: [0, -1, 0], },
+    { position: [0, 0, 0], normal: [0, 0, -1], },
+    { position: [0, 100, 0], normal: [0, 0, -1], },
+    { position: [50, 0, 0], normal: [0, 0, -1], },
+    { position: [0, 0, 0], normal: [0, -1, 0], },
+    { position: [50, 0, 0], normal: [0, -1, 0], },
+    { position: [0, 0, 100], normal: [0, -1, 0], },
   ]
   const indexes = [
     0, 1, 2, 3, 4, 5
@@ -42,38 +62,39 @@ function triGeometry () {
   return myGeometry(vertices, indexes)
 }
 
+// 立方体
 function cubeGeometry () {
   const vertices = [
     // front
-    { pos: [-1, -1,  1], norm: [ 0,  0,  1], uv: [0, 0], }, // 0
-    { pos: [ 1, -1,  1], norm: [ 0,  0,  1], uv: [1, 0], }, // 1
-    { pos: [-1,  1,  1], norm: [ 0,  0,  1], uv: [0, 1], }, // 2
-    { pos: [ 1,  1,  1], norm: [ 0,  0,  1], uv: [1, 1], }, // 3
+    { position: [-1, -1,  1], normal: [ 0,  0,  1], uv: [0, 0], }, // 0
+    { position: [ 1, -1,  1], normal: [ 0,  0,  1], uv: [1, 0], }, // 1
+    { position: [-1,  1,  1], normal: [ 0,  0,  1], uv: [0, 1], }, // 2
+    { position: [ 1,  1,  1], normal: [ 0,  0,  1], uv: [1, 1], }, // 3
     // right
-    { pos: [ 1, -1,  1], norm: [ 1,  0,  0], uv: [0, 0], }, // 4
-    { pos: [ 1, -1, -1], norm: [ 1,  0,  0], uv: [1, 0], }, // 5
-    { pos: [ 1,  1,  1], norm: [ 1,  0,  0], uv: [0, 1], }, // 6
-    { pos: [ 1,  1, -1], norm: [ 1,  0,  0], uv: [1, 1], }, // 7
+    { position: [ 1, -1,  1], normal: [ 1,  0,  0], uv: [0, 0], }, // 4
+    { position: [ 1, -1, -1], normal: [ 1,  0,  0], uv: [1, 0], }, // 5
+    { position: [ 1,  1,  1], normal: [ 1,  0,  0], uv: [0, 1], }, // 6
+    { position: [ 1,  1, -1], normal: [ 1,  0,  0], uv: [1, 1], }, // 7
     // back
-    { pos: [ 1, -1, -1], norm: [ 0,  0, -1], uv: [0, 0], }, // 8
-    { pos: [-1, -1, -1], norm: [ 0,  0, -1], uv: [1, 0], }, // 9
-    { pos: [ 1,  1, -1], norm: [ 0,  0, -1], uv: [0, 1], }, // 10
-    { pos: [-1,  1, -1], norm: [ 0,  0, -1], uv: [1, 1], }, // 11
+    { position: [ 1, -1, -1], normal: [ 0,  0, -1], uv: [0, 0], }, // 8
+    { position: [-1, -1, -1], normal: [ 0,  0, -1], uv: [1, 0], }, // 9
+    { position: [ 1,  1, -1], normal: [ 0,  0, -1], uv: [0, 1], }, // 10
+    { position: [-1,  1, -1], normal: [ 0,  0, -1], uv: [1, 1], }, // 11
     // left
-    { pos: [-1, -1, -1], norm: [-1,  0,  0], uv: [0, 0], }, // 12
-    { pos: [-1, -1,  1], norm: [-1,  0,  0], uv: [1, 0], }, // 13
-    { pos: [-1,  1, -1], norm: [-1,  0,  0], uv: [0, 1], }, // 14
-    { pos: [-1,  1,  1], norm: [-1,  0,  0], uv: [1, 1], }, // 15
+    { position: [-1, -1, -1], normal: [-1,  0,  0], uv: [0, 0], }, // 12
+    { position: [-1, -1,  1], normal: [-1,  0,  0], uv: [1, 0], }, // 13
+    { position: [-1,  1, -1], normal: [-1,  0,  0], uv: [0, 1], }, // 14
+    { position: [-1,  1,  1], normal: [-1,  0,  0], uv: [1, 1], }, // 15
     // top
-    { pos: [ 1,  1, -1], norm: [ 0,  1,  0], uv: [0, 0], }, // 16
-    { pos: [-1,  1, -1], norm: [ 0,  1,  0], uv: [1, 0], }, // 17
-    { pos: [ 1,  1,  1], norm: [ 0,  1,  0], uv: [0, 1], }, // 18
-    { pos: [-1,  1,  1], norm: [ 0,  1,  0], uv: [1, 1], }, // 19
+    { position: [ 1,  1, -1], normal: [ 0,  1,  0], uv: [0, 0], }, // 16
+    { position: [-1,  1, -1], normal: [ 0,  1,  0], uv: [1, 0], }, // 17
+    { position: [ 1,  1,  1], normal: [ 0,  1,  0], uv: [0, 1], }, // 18
+    { position: [-1,  1,  1], normal: [ 0,  1,  0], uv: [1, 1], }, // 19
     // bottom
-    { pos: [ 1, -1,  1], norm: [ 0, -1,  0], uv: [0, 0], }, // 20
-    { pos: [-1, -1,  1], norm: [ 0, -1,  0], uv: [1, 0], }, // 21
-    { pos: [ 1, -1, -1], norm: [ 0, -1,  0], uv: [0, 1], }, // 22
-    { pos: [-1, -1, -1], norm: [ 0, -1,  0], uv: [1, 1], }, // 23
+    { position: [ 1, -1,  1], normal: [ 0, -1,  0], uv: [0, 0], }, // 20
+    { position: [-1, -1,  1], normal: [ 0, -1,  0], uv: [1, 0], }, // 21
+    { position: [ 1, -1, -1], normal: [ 0, -1,  0], uv: [0, 1], }, // 22
+    { position: [-1, -1, -1], normal: [ 0, -1,  0], uv: [1, 1], }, // 23
   ];
 
   const indexes = [
@@ -88,6 +109,7 @@ function cubeGeometry () {
   return myGeometry(vertices, indexes)
 }
 
+// 输入三角形的顶点, 输出法向量
 function getNorm(v1, v2, v3) {
   const a = new THREE.Vector3(v2[0] - v1[0], v2[1] - v1[1], v2[2] - v1[2])
   const b = new THREE.Vector3(v3[0] - v1[0], v3[1] - v1[1], v3[2] - v1[2])
@@ -95,6 +117,12 @@ function getNorm(v1, v2, v3) {
   return [a.x, a.y, a.z]
 }
 
+/**
+ * delaunay 三角网
+ * @param {number} n 顶点数
+ * @param {number} width 宽
+ * @param {number} height 高
+ */
 function delaunayGeometry (n, width, height) {
   const vertices = new Array(n)
   let i, x, y, z
@@ -112,32 +140,36 @@ function delaunayGeometry (n, width, height) {
     z = z * 5
 
     vertices[i] = {
-      pos: [x, y],
+      position: [x, y],
       z,
     }
   }
 
   // 建立三角网
   console.time('triangulate')
-  const triangles = Delaunay.triangulate(vertices, 'pos')
+  const triangles = Delaunay.triangulate(vertices, 'position')
   console.timeEnd('triangulate')
 
   // 加入 z 坐标
   const arr = triangles.map(v => ({
-    pos: [...vertices[v].pos, vertices[v].z]
+    position: [...vertices[v].position, vertices[v].z]
   }))
   console.log('len % 3 === 0:', arr.length)
 
   // 计算法向量
   for (i = 0; i < arr.length; ++i) {
-    arr[i].norm = i % 3 === 0
-      ? getNorm(arr[i].pos, arr[i+1].pos, arr[i+2].pos)
-      : arr[i-1].norm
+    arr[i].normal = i % 3 === 0
+      ? getNorm(arr[i].position, arr[i+1].position, arr[i+2].position)
+      : arr[i-1].normal
   }
 
   return myGeometry(arr)
 }
 
+/**
+ * 三角面模型
+ * @param {Geometry} geometry
+ */
 function solidMesh (geometry) {
   const material = new THREE.MeshPhongMaterial({
     color: 0xff8888,
@@ -147,10 +179,12 @@ function solidMesh (geometry) {
 }
 
 /**
- * @param {string} wrapper
- *   '' // 残缺的三角形
- *   EdgesGeometry // 补全所有边
- *   WireframeGeometry // 补全所有三角形
+ * 线框模型
+ * @param {Geometry} geometry
+ * @param {string} wrapper = '' | EdgesGeometry | WireframeGeometry
+ *     '' // 残缺的三角形
+ *     EdgesGeometry // 补全所有边
+ *     WireframeGeometry // 补全所有三角形
  */
 function lineMesh (geometry, wrapper='EdgesGeometry') { // 残缺的三角形
   if (wrapper) geometry = new THREE[wrapper](geometry)

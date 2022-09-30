@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { WEBGL } from 'three/examples/jsm/WebGL.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import scene from './15-my-geometry.js'
+import scene from './13-gltf-model.js'
 
 const noop = () => {}
 

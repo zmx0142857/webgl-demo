@@ -2,7 +2,8 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
-let cars
+const defaultUrl = 'lopoly-city/scene.gltf'
+let model, cars
 
 export default function scene13 (app) {
   app.renderer.outputEncoding = THREE.sRGBEncoding
@@ -50,17 +51,41 @@ export default function scene13 (app) {
     app.scene.add(light.target)
   }
 
-  {
+  createInput()
+  loadModel(defaultUrl)
+
+  app.animate(/*time => {
+    if (cars) {
+      cars.children.forEach(car => car.rotation.y = time)
+    }
+  }*/)
+
+
+  function createInput () { const input = document.createElement('input')
+    Object.assign(input.style, {
+      position: 'absolute',
+      top: '10px',
+      left: '80px',
+    })
+    input.value = defaultUrl
+    input.onchange = (e) => {
+      loadModel(e.target.value)
+    }
+    document.body.appendChild(input)
+  }
+
+  function loadModel (url) {
+    if (model) app.scene.remove(model)
     const gltfLoader = new GLTFLoader()
-    gltfLoader.load('models/lopoly-city/scene.gltf', (gltf) => {
-      const root = gltf.scene
-      app.scene.add(root)
-      // console.log(dumpObject(root).join('\n'))
-      cars = root.getObjectByName('Cars')
+    gltfLoader.load('models/' + url, (gltf) => {
+      model = gltf.scene
+      app.scene.add(model)
+      // console.log(dumpObject(model).join('\n'))
+      //cars = model.getObjectByName('Cars')
 
       // compute the box that contains all the stuff
-      // from root and below
-      const box = new THREE.Box3().setFromObject(root)
+      // from model and below
+      const box = new THREE.Box3().setFromObject(model)
 
       const boxSize = box.getSize(new THREE.Vector3()).length()
       const boxCenter = box.getCenter(new THREE.Vector3())
@@ -74,12 +99,6 @@ export default function scene13 (app) {
       controls.update()
     })
   }
-
-  app.animate(time => {
-    if (cars) {
-      cars.children.forEach(car => car.rotation.y = time)
-    }
-  })
 }
 
 function frameArea(sizeToFitOnScreen, boxSize, boxCenter, camera) {

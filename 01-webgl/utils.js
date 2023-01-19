@@ -25,3 +25,36 @@ export function initShaderProgram(gl, vsSource, fsSource) {
   }
   return shaderProgram
 }
+
+export function loadVideo (src) {
+  const video = document.createElement('video')
+
+  let playing = false
+  let timeupdate = false
+
+  function checkReady() {
+    if (playing && timeupdate) {
+      video.isReady = true
+    }
+  }
+
+  // Waiting for these 2 events ensures
+  // there is data in the video
+  video.addEventListener('playing', function() {
+    playing = true
+    checkReady()
+  }, true)
+
+  video.addEventListener('timeupdate', function() {
+    timeupdate = true
+    checkReady()
+  }, true)
+
+  // 自动循环播放 (静音)
+  video.autoplay = true
+  video.muted = true
+  video.loop = true
+  video.src = src
+  video.play()
+  return video
+}

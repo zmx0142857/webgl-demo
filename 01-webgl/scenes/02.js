@@ -49,7 +49,7 @@ export default class Scene02 extends Scene {
     const buffers = this.initBuffers()
     this.clear()
 
-    this.setAttr(programInfo.aVertexPosition, buffers.position, { n: 3 })
+    this.setAttr(programInfo.aVertexPosition, buffers.position, { count: 3 })
 
     // Set the shader uniforms
     gl.uniformMatrix4fv(programInfo.uProjectionMatrix, false, this.perspectiveMatrix())

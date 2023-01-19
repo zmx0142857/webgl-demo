@@ -90,8 +90,8 @@ export default class Scene05 extends Scene04 {
   initAttr () {
     const { gl, programInfo, buffers } = this
 
-    this.setAttr(programInfo.aVertexPosition, buffers.position, { n: 3 })
-    this.setAttr(programInfo.aVertexColor, buffers.color, { n: 4 })
+    this.setAttr(programInfo.aVertexPosition, buffers.position, { count: 3 })
+    this.setAttr(programInfo.aVertexColor, buffers.color, { count: 4 })
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.index)
 
     gl.uniformMatrix4fv(programInfo.uProjectionMatrix, false, this.perspectiveMatrix())

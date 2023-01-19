@@ -10,6 +10,7 @@ function loadShader(gl, type, source) {
   return shader
 }
 
+// 所谓 shader program 就是指 vertex shader + fragment shader
 export function initShaderProgram(gl, vsSource, fsSource) {
   const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource)
   const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource)

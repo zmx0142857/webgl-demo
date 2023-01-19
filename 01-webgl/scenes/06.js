@@ -62,8 +62,8 @@ export default class Scene06 extends Scene05 {
     const { gl, programInfo, buffers } = this
 
     this.setTexture(programInfo.uSampler, texture0, gl.TEXTURE0)
-    this.setAttr(programInfo.aVertexPosition, buffers.position, { n: 3 })
-    this.setAttr(programInfo.aTextureCoord, buffers.texture, { n: 2 })
+    this.setAttr(programInfo.aVertexPosition, buffers.position, { count: 3 })
+    this.setAttr(programInfo.aTextureCoord, buffers.texture, { count: 2 })
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.index)
     gl.uniformMatrix4fv(programInfo.uProjectionMatrix, false, this.perspectiveMatrix())

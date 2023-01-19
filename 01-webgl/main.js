@@ -5,9 +5,7 @@ const canvas = window.canvas = document.querySelector('#glcanvas')
 canvas.width = canvas.offsetWidth
 canvas.height = canvas.offsetHeight
 window.onresize = () => {
-  canvas.width = canvas.offsetWidth
-  canvas.height = canvas.offsetHeight
-  currentScene?.updateProjectionMatrix()
+  currentScene?.onResize(canvas.offsetWidth, canvas.offsetHeight)
 }
 
 const gl = canvas.getContext('webgl')

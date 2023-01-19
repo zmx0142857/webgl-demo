@@ -84,10 +84,10 @@ export default class Scene07 extends Scene06 {
   initAttr () {
     const { gl, programInfo, buffers, texture0 } = this
 
-    this.setAttr(programInfo.aVertexPosition, buffers.position, { n: 3 })
-    this.setAttr(programInfo.aVertexNormal, buffers.normal, { n: 3 })
+    this.setAttr(programInfo.aVertexPosition, buffers.position, { count: 3 })
+    this.setAttr(programInfo.aVertexNormal, buffers.normal, { count: 3 })
     this.setTexture(programInfo.uSampler, texture0, gl.TEXTURE0)
-    this.setAttr(programInfo.aTextureCoord, buffers.texture, { n: 2 })
+    this.setAttr(programInfo.aTextureCoord, buffers.texture, { count: 2 })
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.index)
     gl.uniformMatrix4fv(programInfo.uProjectionMatrix, false, this.perspectiveMatrix())

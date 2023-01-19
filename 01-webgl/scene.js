@@ -39,9 +39,14 @@ export default class Scene {
     return projectionMatrix
   }
 
-  updateProjectionMatrix () {
-    if (this.programInfo?.uProjectionMatrix) {
-      this.gl.uniformMatrix4fv(this.programInfo.uProjectionMatrix, false, this.perspectiveMatrix())
+  onResize (width, height) {
+    canvas.width = width
+    canvas.height = height
+    const { gl, programInfo } = this
+    gl.viewport(0, 0, width, height)
+    // updateProjectionMatrix
+    if (programInfo?.uProjectionMatrix) {
+      gl.uniformMatrix4fv(programInfo.uProjectionMatrix, false, this.perspectiveMatrix())
     }
   }
 
@@ -103,19 +108,18 @@ export default class Scene {
   // Tell WebGL how to pull out the positions from the position
   // buffer into the vertexPosition attribute.
   setAttr (attribute, buffer, {
-    n,                  // pull out n values per iteration
+    count,              // number of values pulled out per iteration
     type,               // the data in the buffer is 32bit floats
     normalize = false,  // don't normalize
     stride = 0,         // how many bytes to get from one set of values to the next
     offset = 0,         // how many bytes inside the buffer to start from; 0 = use type and numComponents above
   }) {
     const { gl } = this
-    if (type === undefined) type = gl.FLOAT
     if (buffer) gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
     gl.vertexAttribPointer(
       attribute,
-      n,
-      type,
+      count,
+      type ?? gl.FLOAT,
       normalize,
       stride,
       offset

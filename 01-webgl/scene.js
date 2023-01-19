@@ -73,6 +73,12 @@ class Scene {
     return projectionMatrix
   }
 
+  updateProjectionMatrix () {
+    if (this.programInfo?.uProjectionMatrix) {
+      this.gl.uniformMatrix4fv(this.programInfo.uProjectionMatrix, false, this.perspectiveMatrix())
+    }
+  }
+
   modelViewMatrix () {
     // Set the drawing position to the "identity" point, which is
     // the center of the scene.
@@ -337,17 +343,19 @@ export class Scene03 extends Scene {
     }
   }
 
-  render () {
-    const programInfo = this.initShader()
-    const buffers = this.initBuffers()
-    const { gl } = this
-    this.clear()
-
+  initAttr () {
+    const { gl, programInfo, buffers } = this
     this.setAttr(programInfo.aVertexPosition, buffers.position, { n: 2 })
     this.setAttr(programInfo.aVertexColor, buffers.color, { n: 4 })
-
     gl.uniformMatrix4fv(programInfo.uProjectionMatrix, false, this.perspectiveMatrix())
     gl.uniformMatrix4fv(programInfo.uModelViewMatrix, false, this.modelViewMatrix())
+  }
+
+  render () {
+    this.programInfo = this.initShader()
+    this.buffers = this.initBuffers()
+    this.clear()
+    this.initAttr()
     this.drawArrays(4)
   }
 }
@@ -355,7 +363,7 @@ export class Scene03 extends Scene {
 // 让方块动起来
 export class Scene04 extends Scene03 {
 
-  draw (programInfo, squareRotation) {
+  draw = (now) => {
     this.clear()
     const { gl } = this
 
@@ -363,25 +371,25 @@ export class Scene04 extends Scene03 {
     const modelViewMatrix = this.modelViewMatrix()
     mat4.rotate(modelViewMatrix,  // destination matrix
               modelViewMatrix,    // matrix to rotate
-              squareRotation,     // amount to rotate in radians
+              now * 0.001,     // amount to rotate in radians
               [0, 0, 1]);         // axis to rotate around
 
-    gl.uniformMatrix4fv(programInfo.uModelViewMatrix, false, modelViewMatrix)
+    gl.uniformMatrix4fv(this.programInfo.uModelViewMatrix, false, modelViewMatrix)
     this.drawArrays(4)
   }
 
-  render () {
-    const programInfo = this.initShader()
-    const buffers = this.initBuffers()
-    const { gl } = this
-
+  initAttr () {
+    const { gl, programInfo, buffers } = this
     this.setAttr(programInfo.aVertexPosition, buffers.position, { n: 2 })
     this.setAttr(programInfo.aVertexColor, buffers.color, { n: 4 })
     gl.uniformMatrix4fv(programInfo.uProjectionMatrix, false, this.perspectiveMatrix())
+  }
 
-    this.update(now => {
-      this.draw(programInfo, now * 0.001)
-    })
+  render () {
+    this.programInfo = this.initShader()
+    this.buffers = this.initBuffers()
+    this.initAttr()
+    this.update(this.draw)
   }
 }
 
@@ -459,7 +467,7 @@ export class Scene05 extends Scene04 {
     }
   }
 
-  draw (programInfo, squareRotation) {
+  draw = (now) => {
     this.clear()
     const { gl } = this
 
@@ -467,28 +475,29 @@ export class Scene05 extends Scene04 {
     const modelViewMatrix = this.modelViewMatrix()
     mat4.rotate(modelViewMatrix,  // destination matrix
               modelViewMatrix,    // matrix to rotate
-              squareRotation,     // amount to rotate in radians
+              now * 0.001,     // amount to rotate in radians
               [0, 1, 1]);         // axis to rotate around
 
-    gl.uniformMatrix4fv(programInfo.uModelViewMatrix, false, modelViewMatrix)
+    gl.uniformMatrix4fv(this.programInfo.uModelViewMatrix, false, modelViewMatrix)
 
     this.drawElements(36)
   }
 
-  render () {
-    const programInfo = this.initShader()
-    const buffers = this.initBuffers()
-    const { gl } = this
+  initAttr () {
+    const { gl, programInfo, buffers } = this
 
     this.setAttr(programInfo.aVertexPosition, buffers.position, { n: 3 })
     this.setAttr(programInfo.aVertexColor, buffers.color, { n: 4 })
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.index)
 
     gl.uniformMatrix4fv(programInfo.uProjectionMatrix, false, this.perspectiveMatrix())
+  }
 
-    this.update(now => {
-      this.draw(programInfo, now * 0.001)
-    })
+  render () {
+    this.programInfo = this.initShader()
+    this.buffers = this.initBuffers()
+    this.initAttr()
+    this.update(this.draw)
   }
 }
 
@@ -548,11 +557,9 @@ export class Scene06 extends Scene05 {
     }
   }
 
-  render () {
-    const programInfo = this.initShader()
-    const buffers = this.initBuffers()
+  initAttr () {
     const texture0 = this.initTexture('cubetexture.png')
-    const { gl } = this
+    const { gl, programInfo, buffers } = this
 
     this.setTexture(programInfo.uSampler, texture0, gl.TEXTURE0)
     this.setAttr(programInfo.aVertexPosition, buffers.position, { n: 3 })
@@ -560,10 +567,13 @@ export class Scene06 extends Scene05 {
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.index)
     gl.uniformMatrix4fv(programInfo.uProjectionMatrix, false, this.perspectiveMatrix())
+  }
 
-    this.update(now => {
-      this.draw(programInfo, now * 0.001)
-    })
+  render () {
+    this.programInfo = this.initShader()
+    this.buffers = this.initBuffers()
+    this.initAttr()
+    this.update(this.draw)
   }
 }
 
@@ -629,7 +639,7 @@ export class Scene07 extends Scene06 {
     }
   }
 
-  draw (programInfo, squareRotation) {
+  draw (now) {
     this.clear()
     const { gl } = this
 
@@ -637,24 +647,21 @@ export class Scene07 extends Scene06 {
     const modelViewMatrix = this.modelViewMatrix()
     mat4.rotate(modelViewMatrix,  // destination matrix
               modelViewMatrix,    // matrix to rotate
-              squareRotation,     // amount to rotate in radians
+              now * 0.001,     // amount to rotate in radians
               [0, 1, 1]);         // axis to rotate around
 
-    gl.uniformMatrix4fv(programInfo.uModelViewMatrix, false, modelViewMatrix)
+    gl.uniformMatrix4fv(this.programInfo.uModelViewMatrix, false, modelViewMatrix)
     // 加入光照法向量
     const normalMatrix = modelViewMatrix
     mat4.invert(normalMatrix, normalMatrix)
     mat4.transpose(normalMatrix, normalMatrix)
-    gl.uniformMatrix4fv(programInfo.uNormalMatrix, false, normalMatrix)
+    gl.uniformMatrix4fv(this.programInfo.uNormalMatrix, false, normalMatrix)
 
     this.drawElements(36)
   }
 
-  render () {
-    const programInfo = this.initShader()
-    const buffers = this.initBuffers()
-    const texture0 = this.initTexture('cubetexture.png')
-    const { gl } = this
+  initAttr () {
+    const { gl, programInfo, buffers, texture0 } = this
 
     this.setAttr(programInfo.aVertexPosition, buffers.position, { n: 3 })
     this.setAttr(programInfo.aVertexNormal, buffers.normal, { n: 3 })
@@ -663,35 +670,28 @@ export class Scene07 extends Scene06 {
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.index)
     gl.uniformMatrix4fv(programInfo.uProjectionMatrix, false, this.perspectiveMatrix())
+  }
 
-    this.update(now => {
-      this.draw(programInfo, now * 0.001)
-    })
+  render () {
+    this.programInfo = this.initShader()
+    this.buffers = this.initBuffers()
+    this.texture0 = this.initTexture('cubetexture.png')
+    this.initAttr()
+    this.update(this.draw)
   }
 }
 
 // 使用视频贴图
 export class Scene08 extends Scene07 {
   render () {
-    const programInfo = this.initShader()
-    const buffers = this.initBuffers()
-    // 只改了这里
+    this.programInfo = this.initShader()
+    this.buffers = this.initBuffers()
+    this.texture0 = this.initVideoTexture()
+    this.initAttr()
     const video = loadVideo('Firefox.mp4')
-    const texture0 = this.initVideoTexture()
-    const { gl } = this
-
-    this.setAttr(programInfo.aVertexPosition, buffers.position, { n: 3 })
-    this.setAttr(programInfo.aVertexNormal, buffers.normal, { n: 3 })
-    this.setTexture(programInfo.uSampler, texture0, gl.TEXTURE0)
-    this.setAttr(programInfo.aTextureCoord, buffers.texture, { n: 2 })
-
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.index)
-    gl.uniformMatrix4fv(programInfo.uProjectionMatrix, false, this.perspectiveMatrix())
-
     this.update(now => {
-      // 和这里
-      if (video.isReady) this.updateTexture(texture0, video)
-      this.draw(programInfo, now * 0.001)
+      if (video.isReady) this.updateTexture(this.texture0, video)
+      this.draw(now)
     })
   }
 }

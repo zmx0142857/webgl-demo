@@ -1,8 +1,14 @@
 import * as Scene from './scene.js'
 
+let currentScene;
 const canvas = window.canvas = document.querySelector('#glcanvas')
-canvas.width = document.body.clientWidth
-canvas.height = document.body.clientHeight
+canvas.width = canvas.offsetWidth
+canvas.height = canvas.offsetHeight
+window.onresize = () => {
+  canvas.width = canvas.offsetWidth
+  canvas.height = canvas.offsetHeight
+  currentScene?.updateProjectionMatrix()
+}
 
 const gl = canvas.getContext('webgl')
 
@@ -14,7 +20,8 @@ function play () {
   }
   // 等待上一个动画完全停止后, 再开启当前场景
   setTimeout(() => {
-    new Scene['Scene' + id](gl).render()
+    currentScene = new Scene['Scene' + id](gl)
+    currentScene.render()
   }, 100)
 }
 

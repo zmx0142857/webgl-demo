@@ -26,8 +26,8 @@ export default class Scene02 extends Scene {
     gl.useProgram(program)
 
     return this.initProgramInfo(program, {
-      aVertexPosition: 'attribute',
-      uProjectionMatrix: 'uniform',
+      aVertexPosition: 'attribute', // attribute 是一组数据
+      uProjectionMatrix: 'uniform', // uniform 是单个数据
       uModelViewMatrix: 'uniform',
     })
   }

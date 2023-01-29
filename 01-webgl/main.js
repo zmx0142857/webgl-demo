@@ -1,4 +1,4 @@
-import * as Scene from './scenes/index.js'
+import * as Scene from './scene/index.js'
 
 let currentScene;
 const canvas = window.canvas = document.querySelector('#glcanvas')

@@ -1,11 +1,15 @@
 import Scene from '../scene.js'
-import Scene05 from './05.js'
+import Scene05 from './05-rotating-3d.js'
+import cubeData from '../model/cube.js'
 
 // 带纹理的立方体: uv 属性
-export default class Scene06 extends Scene05 {
-  initShader () {
+export default class Scene07 extends Scene05 {
+  async initShader () {
     const { gl } = this
-    const program = Scene.prototype.initShader.call(this, 'vs-06', 'fs-06')
+    const program = await this.loadShaderByAjax(
+      'shader/texture.vs.glsl',
+      'shader/texture.fs.glsl',
+    )
 
     return this.initProgramInfo(program, {
       aVertexPosition: 'attribute',
@@ -17,48 +21,14 @@ export default class Scene06 extends Scene05 {
   }
 
   initBuffers () {
-    // 纹理坐标的取值范围是 0 到 1
-    const texture = [
-      // Front
-      0.0,  0.0,
-      1.0,  0.0,
-      1.0,  1.0,
-      0.0,  1.0,
-      // Back
-      0.0,  0.0,
-      1.0,  0.0,
-      1.0,  1.0,
-      0.0,  1.0,
-      // Top
-      0.0,  0.0,
-      1.0,  0.0,
-      1.0,  1.0,
-      0.0,  1.0,
-      // Bottom
-      0.0,  0.0,
-      1.0,  0.0,
-      1.0,  1.0,
-      0.0,  1.0,
-      // Right
-      0.0,  0.0,
-      1.0,  0.0,
-      1.0,  1.0,
-      0.0,  1.0,
-      // Left
-      0.0,  0.0,
-      1.0,  0.0,
-      1.0,  1.0,
-      0.0,  1.0
-    ]
-
     return {
       ...super.initBuffers(),
-      texture: this.arrayBuffer(texture)
+      texture: this.arrayBuffer(cubeData.uv)
     }
   }
 
   initAttr () {
-    const texture0 = this.initTexture('cubetexture.png')
+    const texture0 = this.initTexture('model/cube.png')
     const { gl, programInfo, buffers } = this
 
     this.setTexture(programInfo.uSampler, texture0, gl.TEXTURE0)
@@ -69,8 +39,8 @@ export default class Scene06 extends Scene05 {
     gl.uniformMatrix4fv(programInfo.uProjectionMatrix, false, this.perspectiveMatrix())
   }
 
-  render () {
-    this.programInfo = this.initShader()
+  async render () {
+    this.programInfo = await this.initShader()
     this.buffers = this.initBuffers()
     this.initAttr()
     this.update(this.draw)

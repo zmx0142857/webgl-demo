@@ -67,9 +67,20 @@ export default class Scene {
     return modelViewMatrix
   }
 
-  initShader (vsId, fsId) {
+  loadShaderById (vsId, fsId) {
     const vsSource = document.getElementById(vsId).innerText
     const fsSource = document.getElementById(fsId).innerText
+    const { gl } = this
+    const program = initShaderProgram(gl, vsSource, fsSource)
+    gl.useProgram(program)
+    return program
+  }
+
+  async loadShaderByAjax (vsUrl, fsUrl) {
+    const [vsSource, fsSource] = await Promise.all([
+      fetch(vsUrl).then(res => res.text()),
+      fetch(fsUrl).then(res => res.text()),
+    ])
     const { gl } = this
     const program = initShaderProgram(gl, vsSource, fsSource)
     gl.useProgram(program)

@@ -3,7 +3,7 @@ import Scene from '../scene.js'
 // 给方块着色
 export default class Scene03 extends Scene {
   initShader () {
-    const program = super.initShader('vs-03', 'fs-03')
+    const program = this.loadShaderById('vs-03', 'fs-03')
     const { gl } = this
     return this.initProgramInfo(program, {
       aVertexPosition: 'attribute',

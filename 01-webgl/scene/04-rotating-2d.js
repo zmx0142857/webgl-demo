@@ -1,4 +1,4 @@
-import Scene03 from './03.js'
+import Scene03 from './03-colored-square.js'
 const { mat4 } = window.glMatrix
 
 // 让方块动起来

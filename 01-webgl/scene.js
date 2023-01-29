@@ -17,7 +17,11 @@ export default class Scene {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
   }
 
-  perspectiveMatrix () {
+  perspectiveMatrix ({
+    fov = 45 * Math.PI / 180, // in radians
+    near = 0.1,
+    far = 100,
+  } = {}) {
     const { gl } = this
 
     // Create a perspective matrix, a special matrix that is
@@ -28,14 +32,11 @@ export default class Scene {
     // and 100 units away from the camera.
 
     const projectionMatrix = mat4.create()
-    const fieldOfView = 45 * Math.PI / 180;   // in radians
     const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight
-    const zNear = 0.1
-    const zFar = 100.0
 
     // note: glmatrix.js always has the first argument
     // as the destination to receive the result.
-    mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar)
+    mat4.perspective(projectionMatrix, fov, aspect, near, far)
     return projectionMatrix
   }
 
@@ -50,7 +51,9 @@ export default class Scene {
     }
   }
 
-  modelViewMatrix () {
+  modelViewMatrix ({
+    translate = [0.0, 0.0, -6.0],
+  } = {}) {
     // Set the drawing position to the "identity" point, which is
     // the center of the scene.
     const modelViewMatrix = mat4.create()
@@ -63,7 +66,7 @@ export default class Scene {
      * @param src matrix to translate
      * @param offset amount to translate
      */
-    mat4.translate(modelViewMatrix, modelViewMatrix, [0.0, 0.0, -6.0])
+    mat4.translate(modelViewMatrix, modelViewMatrix, translate)
     return modelViewMatrix
   }
 
@@ -138,14 +141,16 @@ export default class Scene {
     gl.enableVertexAttribArray(attribute)
   }
 
-  drawArrays (vertexCount, offset = 0) {
+  drawArrays (vertexCount, { offset = 0, type } = {}) {
     const { gl } = this
-    gl.drawArrays(gl.TRIANGLE_STRIP, offset, vertexCount)
+    type = type ?? gl.TRIANGLE_STRIP
+    gl.drawArrays(type, offset, vertexCount)
   }
 
-  drawElements (vertexCount, offset = 0) {
+  drawElements (vertexCount, { offset = 0, type } = {}) {
     const { gl } = this
-    gl.drawElements(gl.TRIANGLES, vertexCount, gl.UNSIGNED_SHORT, offset)
+    type = type ?? gl.TRIANGLES
+    gl.drawElements(type, vertexCount, gl.UNSIGNED_SHORT, offset)
   }
 
   tempTexture (texture) {

@@ -5,7 +5,6 @@ import cubeData from '../model/cube.js'
 // 带纹理的立方体: uv 属性
 export default class Scene07 extends Scene05 {
   async initShader () {
-    const { gl } = this
     const program = await this.loadShaderByAjax(
       'shader/texture.vs.glsl',
       'shader/texture.fs.glsl',

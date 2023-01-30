@@ -17,7 +17,7 @@ void main(void) {
   gl_Position = uProjectionMatrix * uModelViewMatrix * vec4(aPosition, 1.0);
 
   // 法向
-  vec3 normal = mat3(uNormalMatrix) * aNormal;
+  vec3 normal = normalize(mat3(uNormalMatrix) * aNormal);
   vNormal = normal;
 
   // 环境光

@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "webgl": "serve",
+    "canvas": "parcel 00-canvas/index.html",
+    "webgl": "parcel 01-webgl/index.html",
     "three": "parcel 02-three/index.html"
   },
   "keywords": [],

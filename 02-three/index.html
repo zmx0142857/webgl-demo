@@ -4,28 +4,21 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <meta charset="UTF-8">
   <title>Three.js Demo</title>
-<style>
-body {
-  margin: 0;
-  background: #000;
-  color: #fff;
-}
-canvas {
-  width: 100vw !important;
-  height: 100vh !important;
-}
-#info {
-  position: fixed;
-  bottom: 10px;
-  left: 10px;
-  background: rgba(0,0,0,0.2);
-}
-</style>
+  <link rel="stylesheet" href="/static/main.css">
+  <style>
+  #info {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(0,0,0,0.2);
+  }
+  </style>
 </head>
 <body>
-<!--<script src="/node_modules/three/build/three.js"></script>-->
-<script src="/static/record.js"></script>
-<script type="module" src="./main.js"></script>
-<div id="info"></div>
+  <div id="info"></div>
+  <div id="router"></div>
+  <canvas id="canvas"></canvas>
+  <script src="/static/record.js"></script>
+  <script type="module" src="./main.js"></script>
 </body>
 </html>

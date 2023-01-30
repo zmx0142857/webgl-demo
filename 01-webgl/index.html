@@ -3,72 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <title>WebGL Demo</title>
-<style>
-html, body {
-  margin: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-}
-canvas {
-  height: 100%;
-  width: 100%;
-}
-.btn-group {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  text-align: center;
-  height: 43px;
-}
-.btn-group > a {
-  text-decoration: none;
-  display: inline-block;
-  border: 1px solid #888;
-  border-radius: 3px;
-  padding: 5px;
-  margin: 5px;
-  color: #aaa;
-}
-.btn-group > a:target {
-  color: #29f;
-  border-color: #29f;
-}
-</style>
+  <link rel="stylesheet" href="/static/main.css">
 </head>
 <body>
-<div class="btn-group"></div>
-<canvas id="glcanvas">
+
+<div id="router"></div>
+<canvas id="canvas">
   你的浏览器似乎不支持或者禁用了HTML5 <code>&lt;canvas&gt;</code> 元素.
 </canvas>
-<script src="/node_modules/gl-matrix/gl-matrix.js"></script> <!-- or .min.js -->
+
 <script src="/static/record.js"></script>
 <script type="module" src="./main.js"></script>
-
-<!-- shaders -->
-<script id="vs-03" type="x-shader/x-vertex">
-attribute vec3 aVertexPosition;
-attribute vec4 aVertexColor;
-
-uniform mat4 uModelViewMatrix;
-uniform mat4 uProjectionMatrix;
-
-varying lowp vec4 vColor;
-
-void main(void) {
-  gl_Position = uProjectionMatrix* uModelViewMatrix * vec4(aVertexPosition, 1.0);
-  vColor = aVertexColor;
-}
-</script>
-
-<script id="fs-03" type="x-shader/x-fragment">
-varying lowp vec4 vColor;
-
-void main(void) {
-  gl_FragColor = vColor;
-}
-</script>
 
 </body>
 </html>

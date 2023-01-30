@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Canvas Demo</title>
+  <style>
+  body {
+    padding: 0;
+    margin: 0;
+    background: #eee;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  canvas {
+    background: black;
+  }
+  #router {
+    height: 43px;
+  }
+  #router > a {
+    text-decoration: none;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 5px;
+    margin: 5px;
+    color: #444;
+  }
+  #router > a:target {
+    color: #29f;
+    border-color: #29f;
+  }
+  </style>
+</head>
+<body>
+  <div id="router"></div>
+  <canvas id="canvas" width="550" height="400"></canvas>
+  <script type="module" src="./main.js"></script>
+  <script src="/static/record.js"></script>
+</body>
+</html>

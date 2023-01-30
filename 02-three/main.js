@@ -1,18 +1,20 @@
 import * as THREE from 'three'
 import { WEBGL } from 'three/examples/jsm/WebGL.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import scene from './13-gltf-model.js'
+import * as Scene from './scene'
 
 const noop = () => {}
 
 function getApp (options) {
   const { width, height } = options
 
+  const canvas = document.getElementById('canvas')
+
   // renderer
-  const renderer = new THREE.WebGLRenderer()
+  const renderer = new THREE.WebGLRenderer({ canvas })
+  canvas.width = width
+  canvas.height = height
   renderer.setSize(width, height)
-  const canvas = renderer.domElement
-  document.body.appendChild(canvas)
 
   // camera
   const cameraConfig = {
@@ -51,12 +53,24 @@ function getApp (options) {
     // 动画主循环
     animate (callback = noop) {
       const frame = time => {
-        requestAnimationFrame(frame)
+        if (this.isPlaying) requestAnimationFrame(frame)
         this.responsive()
         callback(time * 0.001)
         this.render()
       }
+      this.isPlaying = true
       requestAnimationFrame(frame)
+    },
+    dispose () {
+      this.isPlaying = false
+      this.scene.traverse(obj => {
+        if (obj instanceof THREE.Mesh) {
+          obj.geometry?.dispose()
+        }
+      })
+      this.scene.clear()
+      this.renderer.clear()
+      this.gui?.destroy()
     },
     // 响应窗口变化
     responsive () {
@@ -96,19 +110,55 @@ function getApp (options) {
   }
 }
 
+const newApp = () => getApp({
+  width: window.innerWidth,
+  height: window.innerHeight,
+  // camera: {
+  //   angle: 45,
+  //   near: 1,
+  //   far: 500,
+  //   distance: 100,
+  // }
+})
+
+let app
+function play () {
+  let id = location.hash.slice(1) || '01'
+  console.log(id)
+  if (app === undefined) {
+    app = newApp()
+  } else if (app.isPlaying) {
+    app.dispose()
+    app = newApp()
+  }
+  // 等待上一个动画完全停止后, 再开启当前场景
+  setTimeout(() => {
+    const scene = Scene['Scene' + id]
+    scene(app)
+  }, 100)
+}
+
+function initBtns () {
+  const frag = document.createDocumentFragment()
+  const btnGroup = document.getElementById('router')
+  btnGroup.innerHTML = ''
+  const sceneCount = Object.keys(Scene).length
+  for (let i = 1; i <= sceneCount; ++i) {
+    const btn = document.createElement('a')
+    const id = i.toString().padStart(2, '0')
+    btn.id = btn.textContent = id
+    btn.href = '#' + id
+    frag.appendChild(btn)
+  }
+  btnGroup.appendChild(frag)
+}
+
 // 检查兼容性
 if (!WEBGL.isWebGL2Available()) {
   alert('your browser does not support WebGL 2')
 } else {
-  const app = getApp({
-    width: window.innerWidth,
-    height: window.innerHeight,
-    // camera: {
-    //   angle: 45,
-    //   near: 1,
-    //   far: 500,
-    //   distance: 100,
-    // }
-  })
-  scene(app)
+  initBtns()
+  window.onhashchange = play
+  app = newApp()
+  play()
 }

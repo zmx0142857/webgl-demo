@@ -264,7 +264,13 @@ const fData = {
     -1, 0, 0,
     -1, 0, 0,
     -1, 0, 0
-  ],
+  ].map((value, index) => {
+    if (index % 3 === 1) {
+      return -value // y
+    } else {
+      return value // x, z
+    }
+  }),
 }
 
 export default fData

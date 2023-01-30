@@ -7,6 +7,6 @@ https://threejsfundamentals.org/threejs/lessons/zh_cn/threejs-fundamentals.html
 ## quick start
 
     $ npm install
-    $ npm install -g serve
+    $ npm run canvas # example 00
     $ npm run webgl # example 01
     $ npm run three # example 02

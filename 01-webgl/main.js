@@ -1,7 +1,7 @@
 import * as Scene from './scene/index.js'
 
 let currentScene;
-const canvas = window.canvas = document.querySelector('#glcanvas')
+const canvas = window.canvas = document.querySelector('#canvas')
 canvas.width = canvas.offsetWidth
 canvas.height = canvas.offsetHeight
 window.onresize = () => {
@@ -25,7 +25,8 @@ function play () {
 
 function initBtns () {
   const frag = document.createDocumentFragment()
-  const btnGroup = document.querySelector('.btn-group')
+  const btnGroup = document.getElementById('router')
+  btnGroup.innerHTML = ''
   const sceneCount = Object.keys(Scene).length
   for (let i = 1; i <= sceneCount; ++i) {
     const btn = document.createElement('a')

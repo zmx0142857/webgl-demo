@@ -1,10 +1,12 @@
-import Scene from '../scene.js'
+import Scene from '../utils/scene.js'
 
 // 给方块着色
 export default class Scene03 extends Scene {
-  initShader () {
-    const program = this.loadShaderById('vs-03', 'fs-03')
-    const { gl } = this
+  async initShader () {
+    const program = await this.loadShaderByAjax(
+      'shader/basic.vs.glsl',
+      'shader/basic.fs.glsl',
+    )
     return this.initProgramInfo(program, {
       aVertexPosition: 'attribute',
       aVertexColor: 'attribute',
@@ -38,8 +40,8 @@ export default class Scene03 extends Scene {
     gl.uniformMatrix4fv(programInfo.uModelViewMatrix, false, this.modelViewMatrix())
   }
 
-  render () {
-    this.programInfo = this.initShader()
+  async render () {
+    this.programInfo = await this.initShader()
     this.buffers = this.initBuffers()
     this.clear()
     this.initAttr()

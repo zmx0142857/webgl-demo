@@ -1,5 +1,5 @@
 import Scene03 from './03-colored-square.js'
-const { mat4 } = window.glMatrix
+import m4 from '../utils/m4.js'
 
 // 让方块动起来
 export default class Scene04 extends Scene03 {
@@ -9,14 +9,7 @@ export default class Scene04 extends Scene03 {
     const { gl } = this
 
     // add rotation
-    const modelViewMatrix = this.modelViewMatrix()
-    /**
-     * @param dest destination matrix
-     * @param src matrix to rotate
-     * @param angle amount to rotate in radians
-     * @param axis axis to rotate around
-     */
-    mat4.rotate(modelViewMatrix, modelViewMatrix, now * 0.001, [0, 0, 1]);
+    const modelViewMatrix = m4().translate([0, 0, -6]).rotate(now * 0.001, [0, 0, 1]).get()
     gl.uniformMatrix4fv(this.programInfo.uModelViewMatrix, false, modelViewMatrix)
     this.drawArrays(4)
   }
@@ -28,8 +21,8 @@ export default class Scene04 extends Scene03 {
     gl.uniformMatrix4fv(programInfo.uProjectionMatrix, false, this.perspectiveMatrix())
   }
 
-  render () {
-    this.programInfo = this.initShader()
+  async render () {
+    this.programInfo = await this.initShader()
     this.buffers = this.initBuffers()
     this.initAttr()
     this.update(this.draw)

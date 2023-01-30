@@ -1,0 +1,33 @@
+html, body {
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #000;
+  color: #fff;
+}
+canvas {
+  height: 100%;
+  width: 100%;
+}
+#router {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  height: 43px;
+}
+#router > a {
+  text-decoration: none;
+  display: inline-block;
+  border: 1px solid #888;
+  border-radius: 3px;
+  padding: 5px;
+  margin: 5px;
+  color: #aaa;
+}
+#router > a:target {
+  color: #29f;
+  border-color: #29f;
+}

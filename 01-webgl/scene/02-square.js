@@ -1,5 +1,5 @@
-import Scene from '../scene.js'
-import { initShaderProgram } from '../utils.js'
+import Scene from '../utils/scene.js'
+import { initShaderProgram } from '../utils/utils.js'
 
 // 黑背景 白方块
 export default class Scene02 extends Scene {

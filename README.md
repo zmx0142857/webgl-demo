@@ -1,8 +1,11 @@
 # WebGL Demo
 
-https://developer.mozilla.org/zh-CN/docs/Web/API/WebGL_API/Tutorial/Getting_started_with_WebGL
+Demo pages built from canvas/webgl/threejs.
 
-https://threejsfundamentals.org/threejs/lessons/zh_cn/threejs-fundamentals.html
+- https://developer.mozilla.org/zh-CN/docs/Web/API/WebGL_API/Tutorial/Getting_started_with_WebGL
+- https://webglfundamentals.org/
+- https://threejs.org/manual/#en/fundamentals
+- https://discoverthreejs.com/tips-and-tricks/
 
 ## quick start
 

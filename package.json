@@ -5,7 +5,9 @@
   "scripts": {
     "canvas": "parcel 00-canvas/index.html",
     "webgl": "parcel 01-webgl/index.html",
-    "three": "parcel 02-three/index.html"
+    "three": "parcel 02-three/index.html",
+    "twgl": "parcel 03-twgl/index.html",
+    "clean": "rm -rf .parcel-cache dist"
   },
   "keywords": [],
   "author": "",
@@ -14,10 +16,13 @@
     "dat.gui": "^0.7.7",
     "delaunay": "^0.4.0",
     "gl-matrix": "^3.4.3",
-    "parcel": "^2.0.0",
-    "three": "^0.133.1"
+    "three": "^0.133.1",
+    "twgl.js": "^5.3.1"
   },
   "devDependencies": {
+    "@parcel/config-default": "^2.8.3",
+    "@parcel/core": "^2.8.3",
+    "parcel": "^2.0.0",
     "parcel-reporter-static-files-copy": "^1.3.0"
   }
 }

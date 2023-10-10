@@ -7,6 +7,7 @@
     "webgl": "parcel 01-webgl/index.html",
     "three": "parcel 02-three/index.html",
     "twgl": "parcel 03-twgl/index.html",
+    "webgpu": "parcel 04-webgpu/index.html",
     "clean": "rm -rf .parcel-cache dist"
   },
   "keywords": [],

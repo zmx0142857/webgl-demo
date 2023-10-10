@@ -13,3 +13,5 @@ Demo pages built from canvas/webgl/threejs.
     $ npm run canvas # example 00
     $ npm run webgl # example 01
     $ npm run three # example 02
+    $ npm run twgl # example 03
+    $ npm run webgpu # example 04
